@@ -206,384 +206,440 @@ const MicroplasticWebsite = () => {
   const profile = deviceProfiles[currentDevice];
   const theme = getDeviceTheme();
 
-  const styles = {
-    app: {
-      fontFamily: "'Inter', 'SF Pro Display', 'Segoe UI', sans-serif",
-      minHeight: '100vh',
-      background: `linear-gradient(135deg, ${theme.light} 0%, #f8f9fa 100%)`,
-      color: '#2c3e50'
-    },
-    header: {
-      background: theme.background,
-      padding: '3rem 0',
-      color: 'white',
-      boxShadow: '0 10px 30px rgba(0, 0, 0, 0.15)'
+ const styles = {
+  app: {
+    fontFamily: "'Inter', 'SF Pro Display', 'Segoe UI', sans-serif",
+    minHeight: '100vh',
+    background: `linear-gradient(135deg, ${theme.light} 0%, #f8f9fa 100%)`,
+    color: '#2c3e50'
+  },
+  header: {
+    background: theme.background,
+    padding: '2rem 0',
+    color: 'white',
+    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.15)',
+    '@media (max-width: 768px)': {
+      padding: '1.5rem 0'
+    }
+  },
+  headerContent: {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '0 1rem',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: '1rem'
+  },
+  logo: {
+    fontSize: 'clamp(1.8rem, 4vw, 2.8rem)',
+    fontWeight: '700',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem'
+  },
+  tagline: {
+    fontSize: 'clamp(0.9rem, 2.5vw, 1.2rem)',
+    opacity: 0.9,
+    fontWeight: '400',
+    marginTop: '0.5rem'
+  },
+  deviceInfo: {
+    textAlign: 'right'
+  },
+  deviceLabel: {
+    fontSize: 'clamp(0.8rem, 2vw, 1rem)',
+    opacity: 0.8,
+    marginBottom: '0.5rem'
+  },
+  deviceName: {
+    fontSize: 'clamp(1.2rem, 3vw, 1.6rem)',
+    fontWeight: '600',
+    marginBottom: '0.3rem'
+  },
+  section: {
+    padding: 'clamp(2rem, 8vw, 5rem) 0'
+  },
+  container: {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '0 1rem'
+  },
+  sectionTitle: {
+    fontSize: 'clamp(1.8rem, 5vw, 2.6rem)',
+    fontWeight: '700',
+    textAlign: 'center',
+    marginBottom: 'clamp(2rem, 5vw, 3rem)',
+    color: theme.accent
+  },
+  statsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: 'clamp(1rem, 3vw, 2rem)',
+    marginBottom: '3rem'
+  },
+  statCard: {
+    background: 'white',
+    borderRadius: 'clamp(15px, 4vw, 20px)',
+    padding: 'clamp(1.5rem, 4vw, 2.5rem)',
+    boxShadow: '0 15px 35px rgba(0, 0, 0, 0.1)',
+    textAlign: 'center',
+    transition: 'transform 0.3s ease',
+    border: '1px solid rgba(0, 0, 0, 0.05)'
+  },
+  statIcon: {
+    fontSize: 'clamp(2rem, 6vw, 3rem)',
+    marginBottom: '1rem'
+  },
+  statNumber: {
+    fontSize: 'clamp(2rem, 6vw, 3rem)',
+    fontWeight: '700',
+    color: theme.primary,
+    marginBottom: '1rem'
+  },
+  statLabel: {
+    fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)',
+    color: '#666',
+    fontWeight: '500'
+  },
+  deviceSectionHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '2rem',
+    flexWrap: 'wrap',
+    gap: '1rem'
+  },
+  addDeviceBtn: {
+    background: theme.background,
+    color: 'white',
+    border: 'none',
+    borderRadius: '25px',
+    padding: 'clamp(0.8rem 1.5rem, 2vw, 1rem 2rem)',
+    fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)',
+    fontWeight: '600',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    transition: 'transform 0.3s ease',
+    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+    minWidth: 'fit-content'
+  },
+  deviceGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: 'clamp(1rem, 3vw, 2rem)',
+    marginBottom: '3rem'
+  },
+  deviceCard: {
+    background: 'white',
+    borderRadius: 'clamp(15px, 4vw, 20px)',
+    padding: 'clamp(1.5rem, 4vw, 2rem)',
+    textAlign: 'center',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+    border: '2px solid transparent',
+    position: 'relative'
+  },
+  activeDeviceCard: {
+    background: theme.background,
+    color: 'white',
+    transform: 'translateY(-5px)',
+    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)'
+  },
+  deviceCardIcon: {
+    fontSize: 'clamp(2.5rem, 6vw, 3rem)',
+    marginBottom: '1rem'
+  },
+  deviceCardName: {
+    fontSize: 'clamp(1.1rem, 3vw, 1.3rem)',
+    fontWeight: '600',
+    marginBottom: '0.5rem'
+  },
+  deviceCardOwner: {
+    fontSize: 'clamp(0.9rem, 2.5vw, 1rem)',
+    opacity: 0.8,
+    marginBottom: '0.5rem'
+  },
+  deviceCardLocation: {
+    fontSize: 'clamp(0.8rem, 2vw, 0.9rem)',
+    opacity: 0.7,
+    marginBottom: '1rem'
+  },
+  activeBadge: {
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    background: theme.accent,
+    color: 'white',
+    padding: '0.3rem 0.8rem',
+    borderRadius: '15px',
+    fontSize: 'clamp(0.6rem, 1.5vw, 0.7rem)',
+    fontWeight: '700'
+  },
+  dashboardContainer: {
+    background: 'white',
+    borderRadius: 'clamp(15px, 5vw, 25px)',
+    padding: 'clamp(1.5rem, 4vw, 3rem)',
+    boxShadow: '0 15px 35px rgba(0, 0, 0, 0.1)',
+    marginBottom: '3rem'
+  },
+  dashboardHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '2rem',
+    paddingBottom: '1rem',
+    borderBottom: '2px solid #f8f9fa',
+    flexWrap: 'wrap',
+    gap: '1rem'
+  },
+  dashboardTitle: {
+    fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+    fontWeight: '700',
+    color: theme.accent
+  },
+  lastUpdated: {
+    background: '#f8f9fa',
+    padding: '0.8rem 1rem',
+    borderRadius: '15px',
+    fontSize: 'clamp(0.8rem, 2vw, 0.9rem)',
+    color: '#666'
+  },
+  dataGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1fr',
+    gap: '1.5rem',
+    marginBottom: '2rem'
+  },
+  primaryCard: {
+    background: '#f8f9fa',
+    borderRadius: 'clamp(15px, 4vw, 20px)',
+    padding: 'clamp(2rem, 5vw, 2.5rem)',
+    border: `3px solid ${theme.primary}`,
+    textAlign: 'center'
+  },
+  primaryValue: {
+    fontSize: 'clamp(3rem, 8vw, 4rem)',
+    fontWeight: '700',
+    color: theme.primary,
+    marginBottom: '0.5rem'
+  },
+  primaryLabel: {
+    fontSize: 'clamp(1rem, 3vw, 1.2rem)',
+    color: '#666',
+    marginBottom: '1rem'
+  },
+  alertIndicator: {
+    background: '#ffebee',
+    color: '#c62828',
+    padding: '0.8rem 1rem',
+    borderRadius: '15px',
+    fontSize: 'clamp(0.8rem, 2vw, 0.9rem)',
+    fontWeight: '600'
+  },
+  qualityCard: {
+    background: '#f8f9fa',
+    borderRadius: 'clamp(15px, 4vw, 20px)',
+    padding: 'clamp(1.5rem, 4vw, 2rem)',
+    textAlign: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center'
+  },
+  qualityBadge: {
+    color: 'white',
+    padding: '1rem 1.5rem',
+    borderRadius: '20px',
+    fontSize: 'clamp(1rem, 3vw, 1.2rem)',
+    fontWeight: '600',
+    marginBottom: '1rem'
+  },
+  parametersGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+    gap: 'clamp(1rem, 3vw, 1.5rem)'
+  },
+  parameterCard: {
+    background: '#f8f9fa',
+    borderRadius: 'clamp(10px, 3vw, 15px)',
+    padding: 'clamp(1.5rem, 4vw, 2rem)',
+    textAlign: 'center'
+  },
+  parameterIcon: {
+    fontSize: 'clamp(2rem, 5vw, 2.5rem)',
+    marginBottom: '1rem'
+  },
+  parameterValue: {
+    fontSize: 'clamp(1.5rem, 4vw, 1.8rem)',
+    fontWeight: '700',
+    color: '#2c3e50',
+    marginBottom: '0.5rem'
+  },
+  parameterLabel: {
+    fontSize: 'clamp(0.8rem, 2vw, 0.9rem)',
+    color: '#666',
+    fontWeight: '500'
+  },
+  deviceInfoPanel: {
+    background: '#f8f9fa',
+    borderRadius: 'clamp(15px, 4vw, 20px)',
+    padding: 'clamp(1.5rem, 4vw, 2.5rem)'
+  },
+  infoGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gap: '1rem'
+  },
+  infoItem: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '1rem',
+    background: 'white',
+    borderRadius: '10px',
+    flexWrap: 'wrap',
+    gap: '0.5rem'
+  },
+  infoLabel: {
+    fontWeight: '600',
+    color: '#555',
+    fontSize: 'clamp(0.9rem, 2.5vw, 1rem)'
+  },
+  infoValue: {
+    fontWeight: '600',
+    color: '#2c3e50',
+    fontSize: 'clamp(0.9rem, 2.5vw, 1rem)'
+  },
+  addDeviceForm: {
+    background: 'white',
+    borderRadius: 'clamp(15px, 4vw, 20px)',
+    padding: 'clamp(1.5rem, 4vw, 3rem)',
+    boxShadow: '0 15px 35px rgba(0, 0, 0, 0.1)',
+    marginTop: '2rem',
+    border: '3px solid #007bff',
+    position: 'relative',
+    zIndex: 1000
+  },
+  formHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '2rem',
+    flexWrap: 'wrap',
+    gap: '1rem'
+  },
+  formTitle: {
+    fontSize: 'clamp(1.4rem, 4vw, 1.8rem)',
+    fontWeight: '700',
+    color: '#2c3e50'
+  },
+  closeBtn: {
+    background: '#f8f9fa',
+    border: 'none',
+    borderRadius: '50%',
+    width: 'clamp(35px, 8vw, 40px)',
+    height: 'clamp(35px, 8vw, 40px)',
+    cursor: 'pointer',
+    fontSize: 'clamp(1.2rem, 3vw, 1.5rem)',
+    color: '#666'
+  },
+  formGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gap: 'clamp(1rem, 3vw, 1.5rem)',
+    marginBottom: '2rem'
+  },
+  inputGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.5rem'
+  },
+  inputLabel: {
+    fontSize: 'clamp(0.9rem, 2.5vw, 1rem)',
+    fontWeight: '600',
+    color: '#2c3e50'
+  },
+  formInput: {
+    padding: 'clamp(0.8rem, 2vw, 1rem)',
+    border: '2px solid #e9ecef',
+    borderRadius: '10px',
+    fontSize: 'clamp(0.9rem, 2.5vw, 1rem)',
+    fontFamily: 'inherit',
+    width: '100%',
+    boxSizing: 'border-box'
+  },
+  formSelect: {
+    padding: 'clamp(0.8rem, 2vw, 1rem)',
+    border: '2px solid #e9ecef',
+    borderRadius: '10px',
+    fontSize: 'clamp(0.9rem, 2.5vw, 1rem)',
+    fontFamily: 'inherit',
+    background: 'white',
+    width: '100%',
+    boxSizing: 'border-box'
+  },
+  formActions: {
+    display: 'flex',
+    gap: '1rem',
+    justifyContent: 'flex-end',
+    flexWrap: 'wrap'
+  },
+  cancelBtn: {
+    background: '#f8f9fa',
+    color: '#666',
+    border: '2px solid #e9ecef',
+    borderRadius: '10px',
+    padding: 'clamp(0.8rem 1.5rem, 2vw, 1rem 2rem)',
+    cursor: 'pointer',
+    fontSize: 'clamp(0.9rem, 2.5vw, 1rem)'
+  },
+  submitBtn: {
+    background: theme.background,
+    color: 'white',
+    border: 'none',
+    borderRadius: '10px',
+    padding: 'clamp(0.8rem 1.5rem, 2vw, 1rem 2rem)',
+    cursor: 'pointer',
+    fontWeight: '600',
+    fontSize: 'clamp(0.9rem, 2.5vw, 1rem)'
+  }
+};
+
+// Add responsive breakpoints for media queries
+const mediaQueries = {
+  mobile: '@media (max-width: 768px)',
+  tablet: '@media (max-width: 1024px)',
+  desktop: '@media (min-width: 1025px)'
+};
+
+// Responsive overrides
+const responsiveStyles = {
+  [`${mediaQueries.mobile}`]: {
+    dataGrid: {
+      gridTemplateColumns: '1fr !important'
     },
     headerContent: {
-      maxWidth: '1200px',
-      margin: '0 auto',
-      padding: '0 2rem',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center'
-    },
-    logo: {
-      fontSize: '2.8rem',
-      fontWeight: '700',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.75rem'
-    },
-    tagline: {
-      fontSize: '1.2rem',
-      opacity: 0.9,
-      fontWeight: '400',
-      marginTop: '0.5rem'
-    },
-    deviceInfo: {
-      textAlign: 'right'
-    },
-    deviceLabel: {
-      fontSize: '1rem',
-      opacity: 0.8,
-      marginBottom: '0.5rem'
-    },
-    deviceName: {
-      fontSize: '1.6rem',
-      fontWeight: '600',
-      marginBottom: '0.3rem'
-    },
-    section: {
-      padding: '5rem 0'
-    },
-    container: {
-      maxWidth: '1200px',
-      margin: '0 auto',
-      padding: '0 2rem'
-    },
-    sectionTitle: {
-      fontSize: '2.6rem',
-      fontWeight: '700',
-      textAlign: 'center',
-      marginBottom: '3rem',
-      color: theme.accent
-    },
-    statsGrid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-      gap: '2rem',
-      marginBottom: '3rem'
-    },
-    statCard: {
-      background: 'white',
-      borderRadius: '20px',
-      padding: '2.5rem',
-      boxShadow: '0 15px 35px rgba(0, 0, 0, 0.1)',
-      textAlign: 'center',
-      transition: 'transform 0.3s ease',
-      border: '1px solid rgba(0, 0, 0, 0.05)'
-    },
-    statIcon: {
-      fontSize: '3rem',
-      marginBottom: '1.5rem'
-    },
-    statNumber: {
-      fontSize: '3rem',
-      fontWeight: '700',
-      color: theme.primary,
-      marginBottom: '1rem'
-    },
-    statLabel: {
-      fontSize: '1.1rem',
-      color: '#666',
-      fontWeight: '500'
+      flexDirection: 'column',
+      textAlign: 'center'
     },
     deviceSectionHeader: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: '3rem'
-    },
-    addDeviceBtn: {
-      background: theme.background,
-      color: 'white',
-      border: 'none',
-      borderRadius: '25px',
-      padding: '1rem 2rem',
-      fontSize: '1.1rem',
-      fontWeight: '600',
-      cursor: 'pointer',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.5rem',
-      transition: 'transform 0.3s ease',
-      boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)'
-    },
-    deviceGrid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-      gap: '2rem',
-      marginBottom: '3rem'
-    },
-    deviceCard: {
-      background: 'white',
-      borderRadius: '20px',
-      padding: '2rem',
-      textAlign: 'center',
-      cursor: 'pointer',
-      transition: 'all 0.3s ease',
-      boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
-      border: '2px solid transparent',
-      position: 'relative'
-    },
-    activeDeviceCard: {
-      background: theme.background,
-      color: 'white',
-      transform: 'translateY(-5px)',
-      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)'
-    },
-    deviceCardIcon: {
-      fontSize: '3rem',
-      marginBottom: '1rem'
-    },
-    deviceCardName: {
-      fontSize: '1.3rem',
-      fontWeight: '600',
-      marginBottom: '0.5rem'
-    },
-    deviceCardOwner: {
-      fontSize: '1rem',
-      opacity: 0.8,
-      marginBottom: '0.5rem'
-    },
-    deviceCardLocation: {
-      fontSize: '0.9rem',
-      opacity: 0.7,
-      marginBottom: '1rem'
-    },
-    activeBadge: {
-      position: 'absolute',
-      top: '10px',
-      right: '10px',
-      background: theme.accent,
-      color: 'white',
-      padding: '0.3rem 0.8rem',
-      borderRadius: '15px',
-      fontSize: '0.7rem',
-      fontWeight: '700'
-    },
-    dashboardContainer: {
-      background: 'white',
-      borderRadius: '25px',
-      padding: '3rem',
-      boxShadow: '0 15px 35px rgba(0, 0, 0, 0.1)',
-      marginBottom: '3rem'
-    },
-    dashboardHeader: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: '2rem',
-      paddingBottom: '1rem',
-      borderBottom: '2px solid #f8f9fa'
-    },
-    dashboardTitle: {
-      fontSize: '2rem',
-      fontWeight: '700',
-      color: theme.accent
-    },
-    lastUpdated: {
-      background: '#f8f9fa',
-      padding: '0.8rem 1.5rem',
-      borderRadius: '20px',
-      fontSize: '0.9rem',
-      color: '#666'
-    },
-    dataGrid: {
-      display: 'grid',
-      gridTemplateColumns: '2fr 1fr',
-      gap: '2rem',
-      marginBottom: '2rem'
-    },
-    primaryCard: {
-      background: '#f8f9fa',
-      borderRadius: '20px',
-      padding: '2.5rem',
-      border: `3px solid ${theme.primary}`,
-      textAlign: 'center'
-    },
-    primaryValue: {
-      fontSize: '4rem',
-      fontWeight: '700',
-      color: theme.primary,
-      marginBottom: '0.5rem'
-    },
-    primaryLabel: {
-      fontSize: '1.2rem',
-      color: '#666',
-      marginBottom: '1rem'
-    },
-    alertIndicator: {
-      background: '#ffebee',
-      color: '#c62828',
-      padding: '0.8rem 1.5rem',
-      borderRadius: '15px',
-      fontSize: '0.9rem',
-      fontWeight: '600'
-    },
-    qualityCard: {
-      background: '#f8f9fa',
-      borderRadius: '20px',
-      padding: '2rem',
-      textAlign: 'center',
-      display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'center'
-    },
-    qualityBadge: {
-      color: 'white',
-      padding: '1rem 2rem',
-      borderRadius: '20px',
-      fontSize: '1.2rem',
-      fontWeight: '600',
-      marginBottom: '1rem'
-    },
-    parametersGrid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-      gap: '1.5rem'
-    },
-    parameterCard: {
-      background: '#f8f9fa',
-      borderRadius: '15px',
-      padding: '2rem',
-      textAlign: 'center'
-    },
-    parameterIcon: {
-      fontSize: '2.5rem',
-      marginBottom: '1rem'
-    },
-    parameterValue: {
-      fontSize: '1.8rem',
-      fontWeight: '700',
-      color: '#2c3e50',
-      marginBottom: '0.5rem'
-    },
-    parameterLabel: {
-      fontSize: '0.9rem',
-      color: '#666',
-      fontWeight: '500'
-    },
-    deviceInfoPanel: {
-      background: '#f8f9fa',
-      borderRadius: '20px',
-      padding: '2.5rem'
-    },
-    infoGrid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-      gap: '1rem'
-    },
-    infoItem: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      padding: '1rem',
-      background: 'white',
-      borderRadius: '10px'
-    },
-    infoLabel: {
-      fontWeight: '600',
-      color: '#555'
-    },
-    infoValue: {
-      fontWeight: '600',
-      color: '#2c3e50'
-    },
-    addDeviceForm: {
-      background: 'white',
-      borderRadius: '20px',
-      padding: '3rem',
-      boxShadow: '0 15px 35px rgba(0, 0, 0, 0.1)',
-      marginTop: '2rem',
-       border: '3px solid red', // Add this to make it obvious
-  position: 'relative', // Add this
-  zIndex: 1000 // Add this
-    },
-    formHeader: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: '2rem'
-    },
-    formTitle: {
-      fontSize: '1.8rem',
-      fontWeight: '700',
-      color: '#2c3e50'
-    },
-    closeBtn: {
-      background: '#f8f9fa',
-      border: 'none',
-      borderRadius: '50%',
-      width: '40px',
-      height: '40px',
-      cursor: 'pointer',
-      fontSize: '1.5rem',
-      color: '#666'
-    },
-    formGrid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-      gap: '1.5rem',
-      marginBottom: '2rem'
-    },
-    inputGroup: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.5rem'
-    },
-    inputLabel: {
-      fontSize: '1rem',
-      fontWeight: '600',
-      color: '#2c3e50'
-    },
-    formInput: {
-      padding: '1rem',
-      border: '2px solid #e9ecef',
-      borderRadius: '10px',
-      fontSize: '1rem',
-      fontFamily: 'inherit'
-    },
-    formSelect: {
-      padding: '1rem',
-      border: '2px solid #e9ecef',
-      borderRadius: '10px',
-      fontSize: '1rem',
-      fontFamily: 'inherit',
-      background: 'white'
+      alignItems: 'stretch'
     },
     formActions: {
-      display: 'flex',
-      gap: '1rem',
-      justifyContent: 'flex-end'
+      justifyContent: 'stretch'
     },
     cancelBtn: {
-      background: '#f8f9fa',
-      color: '#666',
-      border: '2px solid #e9ecef',
-      borderRadius: '10px',
-      padding: '1rem 2rem',
-      cursor: 'pointer'
+      flex: '1'
     },
     submitBtn: {
-      background: theme.background,
-      color: 'white',
-      border: 'none',
-      borderRadius: '10px',
-      padding: '1rem 2rem',
-      cursor: 'pointer',
-      fontWeight: '600'
+      flex: '1'
     }
-  };
+  }
+};
 
   return (
     <div style={styles.app}>
