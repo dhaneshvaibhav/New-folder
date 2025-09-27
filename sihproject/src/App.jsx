@@ -1,11 +1,13 @@
 import { useState } from 'react'
+import MicroplasticWebsite from './dashboard'
 
 function App() {
  
 
   return (
     <>
-      <h1>Hello World!</h1>
+      
+      <MicroplasticWebsite/>
       </>  )
 }
 
