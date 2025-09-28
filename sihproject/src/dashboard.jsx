@@ -11,6 +11,18 @@ const MicroplasticWebsite = () => {
     theme: 'home'
   });
 
+  // Chatbot state
+  const [showChatbot, setShowChatbot] = useState(false);
+  const [chatMessages, setChatMessages] = useState([
+    {
+      id: 1,
+      type: 'bot',
+      message: 'Hello! I\'m AquaScan Assistant. I can help you with device management, water quality analysis, and microplastic information. How can I assist you today?',
+      timestamp: new Date().toLocaleTimeString()
+    }
+  ]);
+  const [chatInput, setChatInput] = useState('');
+
   const deviceProfiles = {
     'ESP001': {
       name: 'Home Kitchen Tap',
@@ -162,6 +174,63 @@ const MicroplasticWebsite = () => {
       setShowAddDevice(false);
     } else {
       alert('Please fill in all required fields');
+    }
+  };
+
+  // Chatbot functions
+  const handleDoubleClick = () => {
+    setShowChatbot(!showChatbot);
+  };
+
+  const handleSendMessage = () => {
+    if (chatInput.trim()) {
+      const userMessage = {
+        id: Date.now(),
+        type: 'user',
+        message: chatInput,
+        timestamp: new Date().toLocaleTimeString()
+      };
+
+      setChatMessages(prev => [...prev, userMessage]);
+
+      // Simulate bot response
+      setTimeout(() => {
+        let botResponse = '';
+        const input = chatInput.toLowerCase();
+
+        if (input.includes('device') || input.includes('esp')) {
+          botResponse = `I can see you currently have ${Object.keys(deviceProfiles).length} ESP devices connected. The active device "${profile.name}" is showing ${sensorData.microplasticLevel}% contamination level. Would you like me to explain the readings or help with device management?`;
+        } else if (input.includes('water quality') || input.includes('microplastic')) {
+          botResponse = `Current water quality is "${sensorData.waterQuality}" with ${sensorData.particleCount} particles per liter. The safe threshold is typically under 100 particles/L. Your current device shows ${sensorData.microplasticLevel}% contamination, which is ${sensorData.microplasticLevel > profile.alertThreshold ? 'above' : 'below'} the alert threshold of ${profile.alertThreshold}%.`;
+        } else if (input.includes('help') || input.includes('what can you do')) {
+          botResponse = 'I can help you with: 1) Device management and registration 2) Water quality analysis and interpretation 3) Microplastic safety information 4) Setting up alerts and thresholds 5) Understanding sensor readings 6) Troubleshooting device issues. What would you like to know more about?';
+        } else if (input.includes('alert') || input.includes('threshold')) {
+          botResponse = `Your current device "${profile.name}" has an alert threshold of ${profile.alertThreshold}%. Current reading is ${sensorData.microplasticLevel}%. ${sensorData.microplasticLevel > profile.alertThreshold ? 'This is above the safe threshold - consider water filtration.' : 'This is within safe limits.'}`;
+        } else if (input.includes('add device') || input.includes('register')) {
+          botResponse = 'To add a new ESP device, click the "Add New Device" button above the device grid. You\'ll need the device ID, location details, and owner information. After registration, it takes 24-48 hours for admin approval and activation.';
+        } else if (input.includes('temperature') || input.includes('ph')) {
+          botResponse = `Current water parameters: Temperature: ${sensorData.temperature.toFixed(1)}°C (optimal: 15-25°C), pH: ${sensorData.ph.toFixed(1)} (optimal: 6.5-8.5). ${sensorData.ph >= 6.5 && sensorData.ph <= 8.5 ? 'pH levels are within safe range.' : 'pH levels may need attention.'}`;
+        } else {
+          botResponse = 'I\'m here to help with AquaScan Pro devices and water quality monitoring. You can ask me about device readings, water safety, microplastic levels, or device management. What specific information do you need?';
+        }
+
+        const botMessage = {
+          id: Date.now() + 1,
+          type: 'bot',
+          message: botResponse,
+          timestamp: new Date().toLocaleTimeString()
+        };
+
+        setChatMessages(prev => [...prev, botMessage]);
+      }, 1000);
+
+      setChatInput('');
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSendMessage();
     }
   };
 
@@ -605,6 +674,143 @@ const MicroplasticWebsite = () => {
     cursor: 'pointer',
     fontWeight: '600',
     fontSize: 'clamp(0.9rem, 2.5vw, 1rem)'
+  },
+  
+  // Chatbot styles
+  chatbotContainer: {
+    position: 'fixed',
+    bottom: '2rem',
+    right: '2rem',
+    width: '400px',
+    height: '600px',
+    background: 'white',
+    borderRadius: '20px',
+    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+    zIndex: 9999,
+    display: 'flex',
+    flexDirection: 'column',
+    border: `3px solid ${theme.primary}`,
+    '@media (max-width: 768px)': {
+      width: 'calc(100vw - 2rem)',
+      height: 'calc(100vh - 4rem)',
+      bottom: '1rem',
+      right: '1rem',
+      left: '1rem'
+    }
+  },
+  
+  chatbotHeader: {
+    background: theme.background,
+    color: 'white',
+    padding: '1.5rem',
+    borderRadius: '17px 17px 0 0',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  
+  chatbotTitle: {
+    fontSize: '1.3rem',
+    fontWeight: '700',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem'
+  },
+  
+  chatbotCloseBtn: {
+    background: 'rgba(255, 255, 255, 0.2)',
+    border: 'none',
+    color: 'white',
+    borderRadius: '50%',
+    width: '35px',
+    height: '35px',
+    cursor: 'pointer',
+    fontSize: '1.5rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  
+  chatbotMessages: {
+    flex: 1,
+    padding: '1rem',
+    overflowY: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+    background: '#f8f9fa'
+  },
+  
+  messageContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    maxWidth: '85%'
+  },
+  
+  userMessage: {
+    background: theme.primary,
+    color: 'white',
+    borderBottomRightRadius: '5px'
+  },
+  
+  messageTime: {
+    fontSize: '0.7rem',
+    opacity: 0.6,
+    marginTop: '0.3rem',
+    marginLeft: '0.5rem'
+  },
+  
+  userMessageTime: {
+    marginLeft: '0',
+    marginRight: '0.5rem'
+  },
+  
+  chatbotInput: {
+    padding: '1rem',
+    borderTop: '1px solid #e9ecef',
+    display: 'flex',
+    gap: '0.5rem',
+    alignItems: 'center'
+  },
+  
+  chatInput: {
+    flex: 1,
+    padding: '0.8rem 1rem',
+    border: '2px solid #e9ecef',
+    borderRadius: '25px',
+    fontSize: '0.9rem',
+    outline: 'none',
+    fontFamily: 'inherit'
+  },
+  
+  chatSendBtn: {
+    background: theme.primary,
+    color: 'white',
+    border: 'none',
+    borderRadius: '50%',
+    width: '40px',
+    height: '40px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.2rem'
+  },
+  
+  chatbotHelper: {
+    position: 'fixed',
+    bottom: '2rem',
+    right: '2rem',
+    background: theme.primary,
+    color: 'white',
+    padding: '1rem',
+    borderRadius: '50px',
+    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+    fontSize: '0.9rem',
+    zIndex: 9998,
+    animation: 'pulse 2s infinite',
+    cursor: 'pointer'
   }
 };
 
@@ -642,7 +848,25 @@ const responsiveStyles = {
 };
 
   return (
-    <div style={styles.app}>
+    <div style={styles.app} onDoubleClick={handleDoubleClick}>
+      <style>{`
+        @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+          100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 768px) {
+          .chatbot-container {
+            width: calc(100vw - 2rem) !important;
+            height: calc(100vh - 4rem) !important;
+            bottom: 1rem !important;
+            right: 1rem !important;
+            left: 1rem !important;
+          }
+        }
+      `}</style>
+
       {/* Header */}
       <header style={styles.header}>
         <div style={styles.headerContent}>
@@ -713,117 +937,233 @@ const responsiveStyles = {
             </button>
           </div>
 
-          {/* Device Selection Grid */}
-          <div style={styles.deviceGrid}>
-            {Object.keys(deviceProfiles).map(deviceId => (
-              <div
-                key={deviceId}
-                onClick={() => switchDevice(deviceId)}
-                style={{
-                  ...styles.deviceCard,
-                  ...(currentDevice === deviceId ? styles.activeDeviceCard : {})
-                }}
-              >
-                <div style={styles.deviceCardIcon}>{deviceProfiles[deviceId].icon}</div>
-                <div style={styles.deviceCardName}>{deviceProfiles[deviceId].name}</div>
-                <div style={styles.deviceCardOwner}>{deviceProfiles[deviceId].owner}</div>
-                <div style={styles.deviceCardLocation}>{deviceProfiles[deviceId].location}</div>
-                <div>Device ID: {deviceId}</div>
-                {currentDevice === deviceId && (
-                  <div style={styles.activeBadge}>ACTIVE</div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Live Dashboard */}
-          <div style={styles.dashboardContainer}>
-            <div style={styles.dashboardHeader}>
-              <h3 style={styles.dashboardTitle}>Live Monitoring - {profile.name}</h3>
-              <div style={styles.lastUpdated}>
-                Last Updated: {sensorData.lastUpdated}
-              </div>
-            </div>
-
-            <div style={styles.dataGrid}>
-              {/* Primary Contamination Display */}
-              <div style={styles.primaryCard}>
-                <div style={styles.primaryValue}>{Math.max(0, sensorData.microplasticLevel)}%</div>
-                <div style={styles.primaryLabel}>Microplastic Contamination Level</div>
-                {sensorData.microplasticLevel > profile.alertThreshold && (
-                  <div style={styles.alertIndicator}>
-                    ⚠️ Above Alert Threshold ({profile.alertThreshold}%)
+          {/* Main Content Layout - Sidebar Layout */}
+          <div style={{
+            display: 'flex',
+            gap: '2rem',
+            alignItems: 'flex-start',
+            '@media (max-width: 1024px)': {
+              flexDirection: 'column'
+            }
+          }}>
+            {/* Device Selection Area */}
+            <div style={{
+              flex: '1',
+              minWidth: '0'
+            }}>
+              <h3 style={{
+                fontSize: 'clamp(1.3rem, 3vw, 1.6rem)',
+                fontWeight: '700',
+                marginBottom: '1.5rem',
+                color: theme.accent
+              }}>
+                Select Device
+              </h3>
+              <div style={styles.deviceGrid}>
+                {Object.keys(deviceProfiles).map(deviceId => (
+                  <div
+                    key={deviceId}
+                    onClick={() => switchDevice(deviceId)}
+                    style={{
+                      ...styles.deviceCard,
+                      ...(currentDevice === deviceId ? styles.activeDeviceCard : {})
+                    }}
+                  >
+                    <div style={styles.deviceCardIcon}>{deviceProfiles[deviceId].icon}</div>
+                    <div style={styles.deviceCardName}>{deviceProfiles[deviceId].name}</div>
+                    <div style={styles.deviceCardOwner}>{deviceProfiles[deviceId].owner}</div>
+                    <div style={styles.deviceCardLocation}>{deviceProfiles[deviceId].location}</div>
+                    <div>Device ID: {deviceId}</div>
+                    {currentDevice === deviceId && (
+                      <div style={styles.activeBadge}>ACTIVE</div>
+                    )}
                   </div>
-                )}
+                ))}
               </div>
+            </div>
 
-              {/* Water Quality */}
-              <div style={styles.qualityCard}>
-                <h4>Water Quality Status</h4>
+            {/* Live Monitoring Sidebar */}
+            <div style={{
+              width: '420px',
+              minWidth: '420px',
+              '@media (max-width: 1024px)': {
+                width: '100%',
+                minWidth: '0'
+              }
+            }}>
+              <div style={{
+                ...styles.dashboardContainer,
+                position: 'sticky',
+                top: '2rem',
+                margin: '0',
+                maxHeight: '90vh',
+                overflowY: 'auto'
+              }}>
+                <div style={styles.dashboardHeader}>
+                  <h3 style={{...styles.dashboardTitle, fontSize: 'clamp(1.2rem, 3vw, 1.4rem)'}}>
+                    Live Monitoring
+                  </h3>
+                  <div style={{...styles.lastUpdated, fontSize: 'clamp(0.7rem, 2vw, 0.8rem)'}}>
+                    {sensorData.lastUpdated}
+                  </div>
+                </div>
+
+                {/* Device Name Display */}
                 <div style={{
-                  ...styles.qualityBadge,
-                  background: sensorData.waterQuality === 'Excellent' ? '#4CAF50' :
-                             sensorData.waterQuality === 'Good' ? '#8BC34A' :
-                             sensorData.waterQuality === 'Moderate' ? '#FF9800' : '#F44336'
+                  background: theme.light,
+                  borderRadius: '15px',
+                  padding: '1rem',
+                  marginBottom: '1.5rem',
+                  textAlign: 'center',
+                  border: `2px solid ${theme.primary}`
                 }}>
-                  {sensorData.waterQuality}
+                  <div style={{
+                    fontSize: '1.5rem',
+                    marginBottom: '0.5rem'
+                  }}>
+                    {profile.icon}
+                  </div>
+                  <div style={{
+                    fontSize: 'clamp(1rem, 2.5vw, 1.1rem)',
+                    fontWeight: '600',
+                    color: theme.accent
+                  }}>
+                    {profile.name}
+                  </div>
+                  <div style={{
+                    fontSize: 'clamp(0.8rem, 2vw, 0.9rem)',
+                    opacity: 0.7,
+                    marginTop: '0.3rem'
+                  }}>
+                    {profile.owner}
+                  </div>
                 </div>
-                <div style={{fontSize: '0.9rem', opacity: 0.7}}>
-                  Based on comprehensive analysis
-                </div>
-              </div>
-            </div>
 
-            {/* Parameters Grid */}
-            <div style={styles.parametersGrid}>
-              <div style={styles.parameterCard}>
-                <div style={styles.parameterIcon}>🔬</div>
-                <div style={styles.parameterValue}>{sensorData.particleCount}</div>
-                <div style={styles.parameterLabel}>Particles per Liter</div>
-              </div>
-              <div style={styles.parameterCard}>
-                <div style={styles.parameterIcon}>🌡️</div>
-                <div style={styles.parameterValue}>{sensorData.temperature.toFixed(1)}°C</div>
-                <div style={styles.parameterLabel}>Water Temperature</div>
-              </div>
-              <div style={styles.parameterCard}>
-                <div style={styles.parameterIcon}>⚗️</div>
-                <div style={styles.parameterValue}>{sensorData.ph.toFixed(1)}</div>
-                <div style={styles.parameterLabel}>pH Level</div>
-              </div>
-            </div>
+                {/* Primary Contamination Display */}
+                <div style={{
+                  ...styles.primaryCard,
+                  padding: 'clamp(1.5rem, 4vw, 2rem)',
+                  marginBottom: '1.5rem'
+                }}>
+                  <div style={{...styles.primaryValue, fontSize: 'clamp(2.5rem, 6vw, 3rem)'}}>
+                    {Math.max(0, sensorData.microplasticLevel)}%
+                  </div>
+                  <div style={{...styles.primaryLabel, fontSize: 'clamp(0.9rem, 2.5vw, 1rem)'}}>
+                    Microplastic Level
+                  </div>
+                  {sensorData.microplasticLevel > profile.alertThreshold && (
+                    <div style={{...styles.alertIndicator, fontSize: 'clamp(0.7rem, 2vw, 0.8rem)'}}>
+                      ⚠️ Above Threshold ({profile.alertThreshold}%)
+                    </div>
+                  )}
+                </div>
 
-            {/* Device Info Panel */}
-            <div style={styles.deviceInfoPanel}>
-              <h4 style={{textAlign: 'center', marginBottom: '2rem', color: theme.accent}}>
-                Device Information
-              </h4>
-              <div style={styles.infoGrid}>
-                <div style={styles.infoItem}>
-                  <span style={styles.infoLabel}>Device ID:</span>
-                  <span style={styles.infoValue}>{currentDevice}</span>
+                {/* Water Quality */}
+                <div style={{...styles.qualityCard, marginBottom: '1.5rem'}}>
+                  <h4 style={{fontSize: 'clamp(1rem, 2.5vw, 1.1rem)', marginBottom: '1rem'}}>
+                    Water Quality Status
+                  </h4>
+                  <div style={{
+                    ...styles.qualityBadge,
+                    background: sensorData.waterQuality === 'Excellent' ? '#4CAF50' :
+                               sensorData.waterQuality === 'Good' ? '#8BC34A' :
+                               sensorData.waterQuality === 'Moderate' ? '#FF9800' : '#F44336',
+                    fontSize: 'clamp(0.9rem, 2.5vw, 1rem)',
+                    padding: '0.8rem 1.2rem'
+                  }}>
+                    {sensorData.waterQuality}
+                  </div>
                 </div>
-                <div style={styles.infoItem}>
-                  <span style={styles.infoLabel}>Location:</span>
-                  <span style={styles.infoValue}>{profile.location}</span>
+
+                {/* Parameters Grid */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr',
+                  gap: '1rem',
+                  marginBottom: '1.5rem'
+                }}>
+                  <div style={{...styles.parameterCard, padding: '1.2rem'}}>
+                    <div style={{...styles.parameterIcon, fontSize: '1.8rem'}}>🔬</div>
+                    <div style={{...styles.parameterValue, fontSize: '1.4rem'}}>
+                      {sensorData.particleCount}
+                    </div>
+                    <div style={styles.parameterLabel}>Particles per Liter</div>
+                  </div>
+                  <div style={{...styles.parameterCard, padding: '1.2rem'}}>
+                    <div style={{...styles.parameterIcon, fontSize: '1.8rem'}}>🌡️</div>
+                    <div style={{...styles.parameterValue, fontSize: '1.4rem'}}>
+                      {sensorData.temperature.toFixed(1)}°C
+                    </div>
+                    <div style={styles.parameterLabel}>Water Temperature</div>
+                  </div>
+                  <div style={{...styles.parameterCard, padding: '1.2rem'}}>
+                    <div style={{...styles.parameterIcon, fontSize: '1.8rem'}}>⚗️</div>
+                    <div style={{...styles.parameterValue, fontSize: '1.4rem'}}>
+                      {sensorData.ph.toFixed(1)}
+                    </div>
+                    <div style={styles.parameterLabel}>pH Level</div>
+                  </div>
                 </div>
-                <div style={styles.infoItem}>
-                  <span style={styles.infoLabel}>Install Date:</span>
-                  <span style={styles.infoValue}>{profile.installDate}</span>
-                </div>
-                <div style={styles.infoItem}>
-                  <span style={styles.infoLabel}>Alert Threshold:</span>
-                  <span style={styles.infoValue}>{profile.alertThreshold}%</span>
-                </div>
-                <div style={styles.infoItem}>
-                  <span style={styles.infoLabel}>GPS Coordinates:</span>
-                  <span style={styles.infoValue}>
-                    {profile.coordinates.lat}°N, {profile.coordinates.lng}°E
-                  </span>
-                </div>
-                <div style={styles.infoItem}>
-                  <span style={styles.infoLabel}>Status:</span>
-                  <span style={{...styles.infoValue, color: theme.primary}}>Online & Active</span>
+
+                {/* Compact Device Info */}
+                <div style={{
+                  background: '#f8f9fa',
+                  borderRadius: '15px',
+                  padding: '1.2rem'
+                }}>
+                  <h4 style={{
+                    fontSize: 'clamp(1rem, 2.5vw, 1.1rem)',
+                    marginBottom: '1rem',
+                    color: theme.accent,
+                    textAlign: 'center'
+                  }}>
+                    Device Information
+                  </h4>
+                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.8rem'}}>
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      padding: '0.5rem',
+                      background: 'white',
+                      borderRadius: '8px',
+                      fontSize: 'clamp(0.8rem, 2vw, 0.9rem)'
+                    }}>
+                      <span style={{fontWeight: '600', color: '#555'}}>ID:</span>
+                      <span style={{fontWeight: '600', color: '#2c3e50'}}>{currentDevice}</span>
+                    </div>
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      padding: '0.5rem',
+                      background: 'white',
+                      borderRadius: '8px',
+                      fontSize: 'clamp(0.8rem, 2vw, 0.9rem)'
+                    }}>
+                      <span style={{fontWeight: '600', color: '#555'}}>Threshold:</span>
+                      <span style={{fontWeight: '600', color: '#2c3e50'}}>{profile.alertThreshold}%</span>
+                    </div>
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      padding: '0.5rem',
+                      background: 'white',
+                      borderRadius: '8px',
+                      fontSize: 'clamp(0.8rem, 2vw, 0.9rem)'
+                    }}>
+                      <span style={{fontWeight: '600', color: '#555'}}>Status:</span>
+                      <span style={{fontWeight: '600', color: theme.primary}}>Online</span>
+                    </div>
+                    <div style={{
+                      padding: '0.5rem',
+                      background: 'white',
+                      borderRadius: '8px',
+                      fontSize: 'clamp(0.75rem, 2vw, 0.85rem)',
+                      textAlign: 'center'
+                    }}>
+                      <span style={{fontWeight: '600', color: '#555'}}>Location: </span>
+                      <span style={{color: '#2c3e50'}}>{profile.location}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1199,6 +1539,71 @@ const responsiveStyles = {
           </div>
         </div>
       </footer>
+
+      {/* Chatbot */}
+      {!showChatbot && (
+        <div style={styles.chatbotHelper}>
+          💬 Double-click anywhere to chat!
+        </div>
+      )}
+
+      {showChatbot && (
+        <div style={styles.chatbotContainer}>
+          <div style={styles.chatbotHeader}>
+            <div style={styles.chatbotTitle}>
+              🤖 AquaScan Assistant
+            </div>
+            <button 
+              style={styles.chatbotCloseBtn}
+              onClick={() => setShowChatbot(false)}
+            >
+              ×
+            </button>
+          </div>
+
+          <div style={styles.chatbotMessages}>
+            {chatMessages.map(msg => (
+              <div 
+                key={msg.id} 
+                style={{
+                  ...styles.messageContainer,
+                  ...(msg.type === 'user' ? styles.userMessageContainer : {})
+                }}
+              >
+                <div style={{
+                  ...styles.message,
+                  ...(msg.type === 'bot' ? styles.botMessage : styles.userMessage)
+                }}>
+                  {msg.message}
+                </div>
+                <div style={{
+                  ...styles.messageTime,
+                  ...(msg.type === 'user' ? styles.userMessageTime : {})
+                }}>
+                  {msg.timestamp}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={styles.chatbotInput}>
+            <input
+              style={styles.chatInput}
+              type="text"
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Ask about water quality, devices, or microplastics..."
+            />
+            <button 
+              style={styles.chatSendBtn}
+              onClick={handleSendMessage}
+            >
+              ➤
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
